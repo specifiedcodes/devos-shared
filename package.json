@@ -7,13 +7,25 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
-  "files": ["dist"],
-  "keywords": ["devos", "types", "shared"],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "devos",
+    "types",
+    "shared"
+  ],
   "author": "DevOS Team",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   }
 }
