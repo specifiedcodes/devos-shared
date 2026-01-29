@@ -1,0 +1,19 @@
+{
+  "name": "@devos/shared",
+  "version": "0.1.0",
+  "description": "Shared TypeScript types and contracts for DevOS platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "files": ["dist"],
+  "keywords": ["devos", "types", "shared"],
+  "author": "DevOS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
