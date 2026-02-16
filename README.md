@@ -1,5 +1,7 @@
 # @devos/shared
 
+![CI](https://github.com/devos-platform/devos-shared/actions/workflows/ci.yml/badge.svg)
+
 Shared TypeScript types and contracts for the DevOS platform.
 
 ## Installation
