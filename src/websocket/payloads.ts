@@ -106,10 +106,125 @@ export interface DeploymentStatusPayload {
   timestamp: string;
 }
 
+// ============================================================
+// Railway Deployment Streaming Payloads (Epic 25)
+// ============================================================
+
+/** Deployment status enum for deployment streaming events */
+export type DeploymentStreamingStatus =
+  | 'queued'
+  | 'building'
+  | 'deploying'
+  | 'success'
+  | 'failed'
+  | 'crashed'
+  | 'cancelled'
+  | 'rolled_back';
+
+/** Railway service type */
+export type RailwayServiceTypeShared =
+  | 'web'
+  | 'api'
+  | 'worker'
+  | 'database'
+  | 'cache'
+  | 'cron';
+
+/** Base deployment event - all events include workspaceId for routing */
+export interface DeploymentEventBase {
+  workspaceId: string;
+  projectId: string;
+  timestamp: string;
+}
+
+/** Emitted when a deployment starts (bulk or single) */
+export interface DeploymentStartedPayload extends DeploymentEventBase {
+  deploymentId: string;
+  services: Array<{
+    serviceId: string;
+    serviceName: string;
+    serviceType: RailwayServiceTypeShared;
+  }>;
+  triggeredBy: string;
+  environment: string;
+}
+
+/** Emitted on per-service status change */
+export interface DeploymentStatusStreamPayload extends DeploymentEventBase {
+  serviceId: string;
+  serviceName: string;
+  status: DeploymentStreamingStatus;
+  deploymentUrl?: string;
+  error?: string;
+  progress?: number;
+}
+
+/** Emitted when entire deployment completes */
+export interface DeploymentCompletedPayload extends DeploymentEventBase {
+  deploymentId: string;
+  status: 'success' | 'partial_failure' | 'failed';
+  services: Array<{
+    serviceId: string;
+    serviceName: string;
+    status: DeploymentStreamingStatus;
+    deploymentUrl?: string;
+    buildDurationSeconds?: number;
+    deployDurationSeconds?: number;
+  }>;
+  totalDurationSeconds: number;
+}
+
+/** Emitted per log line from Railway CLI */
+export interface DeploymentLogPayload extends DeploymentEventBase {
+  serviceId: string;
+  serviceName: string;
+  line: string;
+  stream: 'stdout' | 'stderr';
+  logType: 'build' | 'deploy' | 'runtime';
+  sequence: number;
+}
+
+/** Emitted when environment variables change (names only, never values) */
+export interface DeploymentEnvChangedPayload extends DeploymentEventBase {
+  serviceId: string;
+  serviceName: string;
+  action: 'set' | 'delete' | 'bulk_update';
+  variableNames: string[];
+  autoRedeploy: boolean;
+}
+
+/** Emitted when a service is provisioned */
+export interface DeploymentServiceProvisionedPayload extends DeploymentEventBase {
+  serviceId: string;
+  serviceName: string;
+  serviceType: RailwayServiceTypeShared;
+  status: 'provisioning' | 'active' | 'failed';
+}
+
+/** Emitted when a domain is added, removed, or verified */
+export interface DeploymentDomainUpdatedPayload extends DeploymentEventBase {
+  serviceId: string;
+  serviceName: string;
+  domain: string;
+  action: 'added' | 'removed' | 'verified';
+  status: 'active' | 'pending_dns' | 'pending_ssl' | 'error';
+}
+
+/** Union type for all deployment streaming events */
+export type DeploymentStreamingEvent =
+  | { type: 'deployment:started'; payload: DeploymentStartedPayload }
+  | { type: 'deployment:status'; payload: DeploymentStatusStreamPayload }
+  | { type: 'deployment:completed'; payload: DeploymentCompletedPayload }
+  | { type: 'deployment:log'; payload: DeploymentLogPayload }
+  | { type: 'deployment:env_changed'; payload: DeploymentEnvChangedPayload }
+  | { type: 'deployment:service_provisioned'; payload: DeploymentServiceProvisionedPayload }
+  | { type: 'deployment:domain_updated'; payload: DeploymentDomainUpdatedPayload };
+
 /** Room format for WebSocket subscriptions */
 export type WsRoomType =
   | `workspace:${string}`
   | `project:${string}`
   | `agent:${string}`
   | `cli:${string}`
-  | `chat:${string}`;
+  | `chat:${string}`
+  | `deployment:${string}`;

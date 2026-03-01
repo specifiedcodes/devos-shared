@@ -115,3 +115,24 @@ export const DEPLOYMENT_EVENTS = {
   /** Deployment failed */
   FAILED: 'deployment:failed',
 } as const;
+
+/** Railway deployment streaming events (Epic 25) */
+export const RAILWAY_DEPLOYMENT_EVENTS = {
+  /** Deployment started (bulk deploy or single) */
+  STARTED: 'deployment:started',
+  /** Per-service deployment status change */
+  STATUS: 'deployment:status',
+  /** Deployment completed (all services done) */
+  COMPLETED: 'deployment:completed',
+  /** CLI log line from build/deploy/runtime */
+  LOG: 'deployment:log',
+  /** Environment variable changed (names only, never values) */
+  ENV_CHANGED: 'deployment:env_changed',
+  /** Service provisioned (database, cache, etc.) */
+  SERVICE_PROVISIONED: 'deployment:service_provisioned',
+  /** Domain added, removed, or verified */
+  DOMAIN_UPDATED: 'deployment:domain_updated',
+} as const;
+
+/** Redis channel for deployment events (Epic 25) */
+export const DEPLOYMENT_REDIS_CHANNEL = 'deployment:events' as const;

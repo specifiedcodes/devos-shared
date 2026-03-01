@@ -7,6 +7,8 @@ export {
   NOTIFICATION_EVENTS,
   COST_EVENTS,
   DEPLOYMENT_EVENTS,
+  RAILWAY_DEPLOYMENT_EVENTS,
+  DEPLOYMENT_REDIS_CHANNEL,
 } from './events.js';
 
 export type {
@@ -20,4 +22,16 @@ export type {
   CostUpdatePayload,
   DeploymentStatusPayload,
   WsRoomType,
+  // Railway deployment streaming types (Epic 25)
+  DeploymentStreamingStatus,
+  RailwayServiceTypeShared,
+  DeploymentEventBase,
+  DeploymentStartedPayload,
+  DeploymentStatusStreamPayload,
+  DeploymentCompletedPayload,
+  DeploymentLogPayload,
+  DeploymentEnvChangedPayload,
+  DeploymentServiceProvisionedPayload,
+  DeploymentDomainUpdatedPayload,
+  DeploymentStreamingEvent,
 } from './payloads.js';
